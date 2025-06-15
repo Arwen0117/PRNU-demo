@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PRNU Camera Fingerprint Analysis</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: #ffffff;
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin: 20px 0 40px;
+            padding: 20px;
+        }
+        
+        h1 {
+            font-weight: 700;
+            font-size: 2.8rem;
+            color: #d32f2f;
+            margin-bottom: 15px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #666;
+            max-width: 600px;
+            margin: 20px auto 0;
+            line-height: 1.6;
+        }
+        
+        .content-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            padding: 30px;
+            width: 100%;
+            max-width: 500px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid #f5f5f5;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .card-header i {
+            font-size: 1.8rem;
+            color: #d32f2f;
+            margin-right: 15px;
+        }
+        
+        .card-header h2 {
+            font-size: 1.6rem;
+            color: #d32f2f;
+            font-weight: 600;
+        }
+        
+        .control-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        label {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #444;
+            min-width: 150px;
+            text-align: right;
+        }
+        
+        select {
+            flex: 1;
+            padding: 14px 18px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            background-color: #fafafa;
+            font-size: 1rem;
+            color: #333;
+            outline: none;
+            transition: all 0.3s ease;
+            max-width: 250px;
+            cursor: pointer;
+        }
+        
+        select:focus {
+            border-color: #d32f2f;
+            box-shadow: 0 0 0 3px rgba(211, 47, 47, 0.1);
+        }
+        
+        .image-display {
+            display: flex;
+            align-items: center;
+            margin-top: 25px;
+            padding: 20px;
+            background: #fafafa;
+            border-radius: 14px;
+            gap: 20px;
+        }
+        
+        .image-preview {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+            border: 1px solid #eee;
+            width: 200px;
+            height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #fff;
+            transition: all 0.3s ease;
+        }
+        
+        .image-preview:hover {
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+        
+        .image-preview img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        
+        .result-value {
+            flex: 1;
+            text-align: center;
+            padding: 15px;
+            background: linear-gradient(135deg, #d32f2f, #b71c1c);
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            font-size: 1.3rem;
+            box-shadow: 0 5px 15px rgba(211, 47, 47, 0.15);
+            transition: all 0.3s ease;
+        }
+        
+        .result-value:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 18px rgba(211, 47, 47, 0.2);
+        }
+        
+        .info-panel {
+            background: linear-gradient(135deg, #d32f2f, #b71c1c);
+            color: white;
+            border-radius: 16px;
+            padding: 25px;
+            margin-top: 30px;
+            max-width: 1000px;
+            width: 100%;
+            box-shadow: 0 10px 30px rgba(211, 47, 47, 0.1);
+        }
+        
+        .info-panel h3 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .info-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .info-box {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        
+        .info-box h4 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+        
+        .info-box p {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #f5f5f5;
+        }
+        
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 0.9rem;
+            width: 100%;
+        }
+        
+        @media (max-width: 768px) {
+            .content-wrapper {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .card {
+                max-width: 100%;
+            }
+            
+            .control-group {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            label {
+                text-align: left;
+                min-width: auto;
+            }
+            
+            select {
+                max-width: 100%;
+                width: 100%;
+            }
+            
+            .image-display {
+                flex-direction: column;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>PRNU Camera Fingerprint Analysis</h1>
+        </header>
+        
+        <div class="content-wrapper">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-camera"></i>
+                    <h2>Camera Selection</h2>
+                </div>
+                
+                <div class="control-group">
+                    <label for="camera-select">Camera Type:</label>
+                    <select id="camera-select" onchange="updateCamera()">
+                        <option value="samsung">Samsung</option>
+                        <option value="iphone">iPhone</option>
+                    </select>
+                </div>
+                
+                <div class="image-display">
+                    <div class="image-preview">
+                        <img id="camera-img" src="Samsung_L74wide_1_44474.JPG" alt="Camera image">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-image"></i>
+                    <h2>Image Analysis</h2>
+                </div>
+                
+                <div class="control-group">
+                    <label for="image-select">Image Type:</label>
+                    <select id="image-select" onchange="updateImage()">
+                        <option value="simple">Normal</option>
+                        <option value="dark">Middle</option>
+                        <option value="veryDark">Dark</option>
+                    </select>
+                </div>
+                
+                <div class="image-display">
+                    <div class="image-preview">
+                        <img id="image-img" src="Samsung_L74wide_1_44283.JPG" alt="Analysis image">
+                    </div>
+                    <div class="result-value" id="image-prnu">PCE value: 82.464</div>
+                </div>
+            </div>
+        </div>
+
+    <script>
+        const cameraData = {
+            samsung: { 
+                img: 'Samsung_L74wide_1_44474.JPG', 
+                images: {
+                    simple: { img: 'Samsung_L74wide_1_44283.JPG', prnu: '82.464' },
+                    dark: { img: 'Samsung_L74wide_1_44286.JPG', prnu: '29.001' },
+                    veryDark: { img: 'Samsung_L74wide_1_44287.JPG', prnu: '7.050' }
+                }
+            },
+            iphone: { 
+                img: 'iPhone_image.jpg', 
+                images: {
+                    simple: { img: 'iPhone_simple.jpg', prnu: '0.05' },
+                    dark: { img: 'iPhone_dark.jpg', prnu: '0.1' },
+                    veryDark: { img: 'iPhone_very_dark.jpg', prnu: '0.15' }
+                }
+            },
+        };
+
+        function updateCamera() {
+            const cameraSelect = document.getElementById('camera-select');
+            const selectedCamera = cameraSelect.value;
+            const cameraInfo = cameraData[selectedCamera];
+
+            document.getElementById('camera-img').src = cameraInfo.img;
+            updateImage(); 
+        }
+
+        function updateImage() {
+            const cameraSelect = document.getElementById('camera-select');
+            const selectedCamera = cameraSelect.value;
+            const cameraInfo = cameraData[selectedCamera];
+
+            const imageSelect = document.getElementById('image-select');
+            const selectedImage = imageSelect.value;
+            const imageInfo = cameraInfo.images[selectedImage];
+
+            document.getElementById('image-img').src = imageInfo.img;
+            document.getElementById('image-prnu').innerText = `PCE value: ${imageInfo.prnu}`;
+        }
+        
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCamera();
+        });
+    </script>
+</body>
+</html>
