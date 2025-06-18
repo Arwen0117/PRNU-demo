@@ -302,8 +302,8 @@
                         <img id="image-img" src="Samsung_L74wide_1_44283.JPG" alt="Analysis image">
                     </div>
                     <div class="result-container">
-                        <div class="result-value samsung-result" id="result1">PCE value compare with Samsung Tab3 device1: 43.392</div>
-                        <div class="result-value iphone-result" id="result2">PCE value compare with Samsung Tab3 device2: 0.05</div>
+                        <div class="result-value samsung-result" id="result1">PCE value compare with Samsung: 43.392</div>
+                        <div class="result-value iphone-result" id="result2">PCE value compare with iPhone: 0.05</div>
                     </div>
                 </div>
             </div>
@@ -350,7 +350,7 @@
             samsungTab3_device1: {
                 simple: {
                     result1: '43.392',
-                    result2: '0.05'
+                    result2: '1.528'
                 },
                 dark: {
                     result1: '10.487',
@@ -433,7 +433,9 @@
         }
         
         function getResult1Text(cameraType) {
-            if (cameraType === 'samsungTab3_device1' || cameraType === 'samsungTab3_device2') {
+            if (cameraType === 'samsungTab3_device1') {
+                return 'PCE value compare with Samsung: ';
+            } else if (cameraType === 'samsungTab3_device2') {
                 return 'PCE value compare with Samsung Tab3 device1: ';
             } else if (cameraType === 'samsungS3Mini') {
                 return 'PCE value compare with Samsung S3Mini: ';
@@ -443,7 +445,9 @@
         }
         
         function getResult2Text(cameraType) {
-            if (cameraType === 'samsungTab3_device1' || cameraType === 'samsungTab3_device2') {
+            if (cameraType === 'samsungTab3_device1') {
+                return 'PCE value compare with iPhone: ';
+            } else if (cameraType === 'samsungTab3_device2') {
                 return 'PCE value compare with Samsung Tab3 device2: ';
             } else if (cameraType === 'samsungS3Mini') {
                 return 'PCE value compare with Samsung Tab3 device1: ';
